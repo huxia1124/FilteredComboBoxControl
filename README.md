@@ -3,6 +3,8 @@
 Full source code coming soon!
 ```
 
+[Download Sample Binary From Here](https://github.com/huxia1124/FilteredComboBoxControl/raw/master/bin/FilteredComboBoxSample.exe)
+
 ## A standard combo box with extension features such as instant filters and secondary item text.
 
 ![screenshot](https://github.com/huxia1124/FilteredComboBoxControl/blob/master/FilteredComboBoxControl/FilteredComboBox.gif)
