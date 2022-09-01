@@ -12,6 +12,28 @@ Full source code coming soon!
 
 ## Usage:
 ```c++
+
+class MyMainWindow : public MainWindow
+{
+public:
+    MyMainWindow() : _comboBox(nullptr) {}
+    void SetComboBox(HWND hWndComboBox) { _comboBox = hWndComboBox; }
+
+protected:
+    virtual LRESULT PreWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) override
+    {
+        if (_comboBox)
+        {
+            FilteredComboBox::ForwardParentMessage(_comboBox, hWnd, message, wParam, lParam);
+        }
+        return 0;
+    }
+
+private:
+    HWND _comboBox;
+};
+
+
     const int numFields = 4;
     const TCHAR* country_data[] =
     {
@@ -21,18 +43,24 @@ Full source code coming soon!
 
     BufferedPaintInit();
 
-    MainWindow w;
+    MyMainWindow w;
     w.Create(_T("Filtered Combobox Test"), 600, 400);
     w.Show();
 
-    HFONT hFont = GetStockFont(DEFAULT_GUI_FONT);
-    HWND hWndCombo = CreateWindow(_T("ComboBox"), _T(""), WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | WS_VSCROLL, 20, 20, 300, 80, w.GetHWnd(), nullptr, nullptr, nullptr);
-    SendMessage(hWndCombo, WM_SETFONT, (WPARAM)hFont, 0);
+    FilteredComboBox::SuperclassComboBox(_T("FilteredComboBox"));
+    HWND hWndCombo = CreateWindow(_T("FilteredComboBox"), _T(""), WS_CHILD | WS_VISIBLE | WS_TABSTOP | CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | WS_VSCROLL, 20, 60, 300, 80, w.GetHWnd(), (HMENU)1322, nullptr, nullptr);
+    if (!hWndCombo)
+    {
+        BufferedPaintUnInit();
+        return 0;
+    }
 
-    FilteredComboBox combo;
-    combo.Attach(hWndCombo);
-    w.ForwardNotification(&combo);
-    w.ForwardDrawItem(&combo);
+    w.SetComboBox(hWndCombo);
+
+    ComboBox_ParseTabs(hWndCombo, true);
+
+    HFONT hFont = GetStockFont(DEFAULT_GUI_FONT);
+    SendMessage(hWndCombo, WM_SETFONT, (WPARAM)hFont, 0);
 
     int index = -1;
 
@@ -56,37 +84,37 @@ Full source code coming soon!
         text += _T("\t");
         text += country_data[idx * numFields + 1];
         index = ComboBox_AddString(hWndCombo, text.c_str());
-        combo.SetStringTag(index, _T("continent"), country_data[idx * numFields + 1]);
-        combo.SetStringTag(index, _T("unregion"), country_data[idx * numFields + 2]);
-        combo.SetStringTag(index, _T("level1type"), country_data[idx * numFields + 3]);
+        ComboBox_SetStringTag(hWndCombo, index, _T("continent"), country_data[idx * numFields + 1]);
+        ComboBox_SetStringTag(hWndCombo, index, _T("unregion"), country_data[idx * numFields + 2]);
+        ComboBox_SetStringTag(hWndCombo, index, _T("level1type"), country_data[idx * numFields + 3]);
 
         allContinents.insert(country_data[idx * numFields + 1]);
         allUnRegions.insert(country_data[idx * numFields + 2]);
         allLevel1Types.insert(country_data[idx * numFields + 3]);
-    }
-
-    int idxFilter = combo.AddFilter(_T("Continent"), _T("continent"), true);
-    FilteredComboBox::ComboFilterItemList* pFilterItemListContinent = combo.GetFilterItemList(idxFilter);
+   }
+   
+    int idxFilter = ComboBox_AddFilter(hWndCombo, _T("Continent"), _T("continent"));
+    ComboBox_SetFilterMultiSelection(hWndCombo, idxFilter, true);
     for (auto it = allContinents.begin(); it != allContinents.end(); ++it)
     {
-        pFilterItemListContinent->emplace_back(*it, *it);
+        ComboBox_AddFilterChoice(hWndCombo, idxFilter , (*it).c_str(), (*it).c_str());
     }
 
-    idxFilter = combo.AddFilter(_T("UN Region"), _T("unregion"), true);
-    FilteredComboBox::ComboFilterItemList* pFilterItemListUnRegion = combo.GetFilterItemList(idxFilter);
+    idxFilter = ComboBox_AddFilter(hWndCombo, _T("UN Region"), _T("unregion"));
+    ComboBox_SetFilterMultiSelection(hWndCombo, idxFilter, true);
     for (auto it = allUnRegions.begin(); it != allUnRegions.end(); ++it)
     {
-        pFilterItemListUnRegion->emplace_back(*it, *it);
+        ComboBox_AddFilterChoice(hWndCombo, idxFilter, (*it).c_str(), (*it).c_str());
     }
 
-    idxFilter = combo.AddFilter(_T("Level 1 Type"), _T("level1type"), false);
-    FilteredComboBox::ComboFilterItemList* pFilterItemListL1Type = combo.GetFilterItemList(idxFilter);
+    idxFilter = ComboBox_AddFilter(hWndCombo, _T("Level 1 Type"), _T("level1type"));
     for (auto it = allLevel1Types.begin(); it != allLevel1Types.end(); ++it)
     {
-        pFilterItemListL1Type->emplace_back(*it, *it);
+        ComboBox_AddFilterChoice(hWndCombo, idxFilter, (*it).c_str(), (*it).c_str());
     }
 
-    combo.BuildFilterUI();
+    ComboBox_CalculateAutoWidth(hWndCombo);
     w.RunMessageLoop();
+
     BufferedPaintUnInit();
 ```
