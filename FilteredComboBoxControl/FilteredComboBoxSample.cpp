@@ -2,7 +2,6 @@
 //
 
 #include "framework.h"
-#include "FilteredComboBoxSample.h"
 
 #include "MainWindow.h"
 #include "FilteredComboBox.h"
@@ -10,6 +9,18 @@
 #include <numeric>
 #include <random>
 #include <set>
+#include <vector>
+#include <uxtheme.h>
+
+using namespace std;
+
+#ifdef UNICODE
+typedef std::wstring STLSTRING;
+#else
+typedef std::string STLSTRING;
+#endif
+
+#pragma comment(lib, "uxtheme.lib")
 
 const int numFields = 4;
 const TCHAR* country_data[] =
@@ -255,7 +266,8 @@ protected:
     {
         if (_comboBox)
         {
-            FilteredComboBox::ForwardParentMessage(_comboBox, hWnd, message, wParam, lParam);
+            MSG msg{ hWnd, message, wParam, lParam };
+            ComboBox_ForwardParentMessage(_comboBox, &msg);
         }
         return 0;
     }
@@ -279,10 +291,25 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     w.Create(_T("Filtered Combobox Test"), 600, 400);
     w.Show();
 
-    FilteredComboBox::SuperclassComboBox(_T("FilteredComboBox"));
+
+#ifdef _M_X64
+    STLSTRING dllPath = _T("FilteredComboBox_x64.dll");
+#else
+    STLSTRING dllPath = _T("FilteredComboBox.dll");
+#endif
+    HINSTANCE hDLL = LoadLibrary(dllPath.c_str());
+
+    if (!hDLL)
+    {
+        BufferedPaintUnInit();
+        MessageBox(nullptr, (_T("Unable to load ") + dllPath).c_str(), _T("Error"), MB_OK | MB_ICONERROR);
+        return 1;
+    }
+
     HWND hWndCombo = CreateWindow(_T("FilteredComboBox"), _T(""), WS_CHILD | WS_VISIBLE | WS_TABSTOP | CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | WS_VSCROLL, 20, 60, 300, 80, w.GetHWnd(), (HMENU)1322, nullptr, nullptr);
     if (!hWndCombo)
     {
+        FreeLibrary(hDLL);
         BufferedPaintUnInit();
         return 0;
     }
@@ -302,10 +329,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         {
             return _tcscmp(country_data[a * numFields], country_data[b * numFields]) < 0;
         });
-
-    //random_device randomdevice;
-    //mt19937 generator(randomdevice());
-    //shuffle(begin(indices), end(indices), generator);
 
     set<STLSTRING> allContinents;
     set<STLSTRING> allUnRegions;
@@ -352,6 +375,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     ComboBox_CalculateAutoWidth(hWndCombo);
     w.RunMessageLoop();
 
+    FreeLibrary(hDLL);
     BufferedPaintUnInit();
 
     return 0;
