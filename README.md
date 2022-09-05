@@ -3,7 +3,7 @@
 Full source code coming soon!
 ```
 
-[Download Sample Binary From Here](https://github.com/huxia1124/FilteredComboBoxControl/raw/master/bin/FilteredComboBoxSample.exe)
+[Download Sample Binary From Here](https://github.com/huxia1124/FilteredComboBoxControl/raw/master/bin/FilteredComboBoxControl.exe)
 
 ## A standard combo box with extension features such as instant filters and secondary item text.
 
@@ -24,7 +24,8 @@ protected:
     {
         if (_comboBox)
         {
-            FilteredComboBox::ForwardParentMessage(_comboBox, hWnd, message, wParam, lParam);
+            MSG msg{ hWnd, message, wParam, lParam };
+            ComboBox_ForwardParentMessage(_comboBox, &msg); // required
         }
         return 0;
     }
@@ -38,7 +39,8 @@ private:
     const TCHAR* country_data[] =
     {
     _T("Angola"), _T("Africa"),_T("Middle Africa"),_T("(Other)"),
-    //...
+    //... list of all countries
+    _T("Venezuela"), _T("South America"),_T("South America"),_T("(Other)")
     };
 
     BufferedPaintInit();
@@ -47,7 +49,20 @@ private:
     w.Create(_T("Filtered Combobox Test"), 600, 400);
     w.Show();
 
-    FilteredComboBox::SuperclassComboBox(_T("FilteredComboBox"));
+#ifdef _M_X64
+    STLSTRING dllPath = _T("FilteredComboBox_x64.dll");
+#else
+    STLSTRING dllPath = _T("FilteredComboBox.dll");
+#endif
+    HINSTANCE hDLL = LoadLibrary(dllPath.c_str());
+
+    if (!hDLL)
+    {
+        BufferedPaintUnInit();
+        MessageBox(nullptr, (_T("Unable to load ") + dllPath).c_str(), _T("Error"), MB_OK | MB_ICONERROR);
+        return 1;
+    }
+    
     HWND hWndCombo = CreateWindow(_T("FilteredComboBox"), _T(""), WS_CHILD | WS_VISIBLE | WS_TABSTOP | CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | WS_VSCROLL, 20, 60, 300, 80, w.GetHWnd(), (HMENU)1322, nullptr, nullptr);
     if (!hWndCombo)
     {
