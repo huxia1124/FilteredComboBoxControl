@@ -38,5 +38,3 @@ struct COMBOBOX_STRING_PAIR
 #define ComboBox_CalculateAutoWidth(hwndCtl)       ((int)(DWORD)SNDMSG((hwndCtl), CB_CALCULATE_AUTO_WIDTH, 0L, 0L))
 
 #define ComboBox_ForwardParentMessage(hwndCtl, pMsg)       ((int)(DWORD)SNDMSG((hwndCtl), CB_FORWARD_PARENT_MESSAGE, (WPARAM)(MSG*)(pMsg), 0L))
-
-extern bool RegisterFilteredComboBox(LPCTSTR lpszNewClassName);
