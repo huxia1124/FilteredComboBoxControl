@@ -13,6 +13,9 @@ Don't forget to [download 32-bit DLL file](https://github.com/huxia1124/Filtered
 - Easy to use. Just load the DLL and you have a new class "FilteredComboBox" ready to use
 - Self-contained. No neeed to forward notifications from parent window
 - Powerful. Supports multiple filters with an extra substring filter, highlighted.
+- Built on standard "ComboBox" control. It sends all standard CBN_XXX notifications
+
+Current Limitations: Works only in drop-down list mode.  CBS_SORT is not supported and you need to sort the data by yourself before adding them into the combobox.
 
 
 
