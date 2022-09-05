@@ -3,9 +3,18 @@
 Full source code coming soon!
 ```
 
-[Download Sample Binary From Here](https://github.com/huxia1124/FilteredComboBoxControl/raw/master/bin/FilteredComboBoxControl.exe)
+[Download Sample Executable From Here](https://github.com/huxia1124/FilteredComboBoxControl/raw/master/bin/FilteredComboBoxControl.exe)
+
+Don't forget to [download 32-bit DLL file](https://github.com/huxia1124/FilteredComboBoxControl/raw/master/bin/FilteredComboBox.dll) or [download 64-bit DLL file](https://github.com/huxia1124/FilteredComboBoxControl/raw/master/bin/FilteredComboBox_x64.dll) too.
 
 ## A standard combo box with extension features such as instant filters and secondary item text.
+
+- Implemented in pure Windows API.
+- Easy to use. Just load the DLL and you have a new class "FilteredComboBox" ready to use
+- Self-contained. No neeed to forward notifications from parent window
+- Powerful. Supports multiple filters with an extra substring filter, highlighted.
+
+
 
 ![screenshot](https://github.com/huxia1124/FilteredComboBoxControl/blob/master/FilteredComboBoxControl/FilteredComboBox.gif)
 
