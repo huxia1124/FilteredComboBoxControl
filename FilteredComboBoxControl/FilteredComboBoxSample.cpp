@@ -295,6 +295,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// FilteredComboBox has new messages to change filter settings. See FilteredComboBox.h
 	ComboBox_ParseTabs(hWndCombo, true);
+	ComboBox_SetEmptyText(hWndCombo, _T("<Unknown>"));
 
 
 	int index = -1;

@@ -8,7 +8,7 @@
 #define     CB_SET_FILTER_UI_WIDTH	(WM_USER + 106)
 #define     CB_PARSE_TABS			(WM_USER + 107)
 #define     CB_CALCULATE_AUTO_WIDTH			(WM_USER + 108)
-#define     CB_FORWARD_PARENT_MESSAGE			(WM_USER + 109)
+#define     CB_SET_EMPTY_TEXT		(WM_USER + 110)
 
 struct COMBOBOX_STRING_PAIR
 {
@@ -37,4 +37,4 @@ struct COMBOBOX_STRING_PAIR
 #define ComboBox_ParseTabs(hwndCtl, parseTabs)       ((int)(DWORD)SNDMSG((hwndCtl), CB_PARSE_TABS, (WPARAM)(BOOL)(parseTabs), 0L))
 #define ComboBox_CalculateAutoWidth(hwndCtl)       ((int)(DWORD)SNDMSG((hwndCtl), CB_CALCULATE_AUTO_WIDTH, 0L, 0L))
 
-#define ComboBox_ForwardParentMessage(hwndCtl, pMsg)       ((int)(DWORD)SNDMSG((hwndCtl), CB_FORWARD_PARENT_MESSAGE, (WPARAM)(MSG*)(pMsg), 0L))
+#define ComboBox_SetEmptyText(hwndCtl, lpszText)       ((int)(DWORD)SNDMSG((hwndCtl), CB_SET_EMPTY_TEXT, (WPARAM)(LPCTSTR)(lpszText),0L))
