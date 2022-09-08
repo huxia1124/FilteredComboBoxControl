@@ -5,7 +5,7 @@ Full source code coming soon!
 
 [Download Sample Executable From Here](https://github.com/huxia1124/FilteredComboBoxControl/raw/master/bin/FilteredComboBoxControl.exe)
 
-Don't forget to [download 32-bit DLL file](https://github.com/huxia1124/FilteredComboBoxControl/raw/master/bin/FilteredComboBox.dll) or [download 64-bit DLL file](https://github.com/huxia1124/FilteredComboBoxControl/raw/master/bin/FilteredComboBox_x64.dll) too.
+Don't forget to [download 32-bit DLL file (Unicode)](https://github.com/huxia1124/FilteredComboBoxControl/raw/master/bin/FilteredComboBox.dll) or [download 64-bit DLL file (Unicode)](https://github.com/huxia1124/FilteredComboBoxControl/raw/master/bin/FilteredComboBox_x64.dll) too.
 
 ## A standard combo box with extension features such as instant filters and secondary item text.
 
