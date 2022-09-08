@@ -16,9 +16,11 @@ public:
 
 protected:
 
-	virtual LRESULT PreWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+	virtual void PreWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
-		return 0;
+	}
+	virtual void PostWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+	{
 	}
 
 	static LRESULT CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);

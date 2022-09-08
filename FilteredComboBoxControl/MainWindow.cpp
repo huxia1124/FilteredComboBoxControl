@@ -21,24 +21,17 @@ BOOL MainWindow::Create(LPCTSTR lpszTitle, const SIZE& size)
     wcex.style = CS_HREDRAW | CS_VREDRAW;
     wcex.lpfnWndProc = MainWindowProc;
     wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
+    wcex.cbWndExtra = sizeof(MainWindow*);
     wcex.hInstance = GetModuleHandle(nullptr);
     wcex.hIcon = LoadIcon(nullptr, IDI_APPLICATION);
     wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszClassName = szWindowClass;
-    wcex.cbWndExtra = sizeof(MainWindow*);
 
     RegisterClassExW(&wcex);
 
     m_hWnd = CreateWindowEx(WS_EX_CONTROLPARENT, szWindowClass, lpszTitle, WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, 0, size.cx, size.cy, nullptr, nullptr, wcex.hInstance, nullptr);
-
-    if (m_hWnd)
-    {
-        SetWindowLongPtr(m_hWnd, 0, reinterpret_cast<DWORD_PTR>(this));
-    }
-
+        CW_USEDEFAULT, 0, size.cx, size.cy, nullptr, nullptr, wcex.hInstance, this);
     
     return m_hWnd != nullptr;
 }
@@ -66,6 +59,7 @@ LRESULT CALLBACK MainWindow::MainWindowProc(HWND hWnd, UINT message, WPARAM wPar
         pThis->PreWndProc(hWnd, message, wParam, lParam);
     }
 
+    LRESULT result = 0;
     switch (message)
     {
     case WM_PAINT:
@@ -79,8 +73,28 @@ LRESULT CALLBACK MainWindow::MainWindowProc(HWND hWnd, UINT message, WPARAM wPar
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
+    case WM_CREATE:
+        {
+            LPCREATESTRUCT pCS = reinterpret_cast<LPCREATESTRUCT>(lParam);
+            pThis = reinterpret_cast<MainWindow*>(pCS->lpCreateParams);
+            result = DefWindowProc(hWnd, message, wParam, lParam);
+
+            if (result != -1)
+            {
+                SetWindowLongPtr(hWnd, 0, reinterpret_cast<DWORD_PTR>(pThis));
+                if (pThis)
+                {
+                    pThis->PostWndProc(hWnd, message, wParam, lParam);
+                }
+            }
+        }
+        break;
     default:
-        return DefWindowProc(hWnd, message, wParam, lParam);
+        result = DefWindowProc(hWnd, message, wParam, lParam);
+        if (pThis)
+        {
+            pThis->PostWndProc(hWnd, message, wParam, lParam);
+        }
     }
-    return 0;
+    return result;
 }

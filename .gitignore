@@ -360,3 +360,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/bin/FilteredComboBoxD.dll
+/bin/FilteredComboBoxControlD.exe

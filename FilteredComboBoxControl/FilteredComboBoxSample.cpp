@@ -252,6 +252,32 @@ _T("Uruguay"), _T("South America"),_T("South America"),_T("(Other)"),
 _T("Venezuela"), _T("South America"),_T("South America"),_T("(Other)")
 };
 
+#define COMBOBOX_CONTROL_ID		1322
+class MyMainWindow : public MainWindow
+{
+public:
+	HWND m_hWndLabel;
+
+	virtual void PostWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) override
+	{
+		if (message == WM_CREATE)
+		{
+			// Create a label to show currect selection
+			m_hWndLabel = CreateWindow(_T("Static"), _T(""), WS_CHILD | WS_VISIBLE, 20, 100, 400, 20, hWnd, (HMENU)1601, nullptr, nullptr);
+		}
+		else if (message == WM_COMMAND && (HIWORD(wParam) == CBN_SELENDOK))
+		{
+			// CBN_SELENDOK handler
+
+			TCHAR szText[500];
+			HWND m_hWndCombo = reinterpret_cast<HWND>(lParam);
+			int sel = ComboBox_GetCurSel(m_hWndCombo);
+			ComboBox_GetLBText(m_hWndCombo, sel, szText);
+			SetWindowText(m_hWndLabel, szText);
+		}
+	}
+};
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR    lpCmdLine,
@@ -261,8 +287,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
 	// Just an ordinary main window as parent of combobox. You can put the combobox in any parent window.
-	MainWindow w;
-	w.Create(_T("Filtered Combobox Test"), 600, 400);
+	MyMainWindow w;
+	w.Create(_T("Filtered Combobox Test"), 800, 600);
 	w.Show();
 
 #ifdef _M_X64
@@ -282,7 +308,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 
 	// Now we can create the control using "FilteredComboBox" as class name
-	HWND hWndCombo = CreateWindow(_T("FilteredComboBox"), _T(""), WS_CHILD | WS_VISIBLE | WS_TABSTOP | CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | WS_VSCROLL, 20, 60, 300, 80, w.GetHWnd(), (HMENU)1322, nullptr, nullptr);
+	HWND hWndCombo = CreateWindow(_T("FilteredComboBox"), _T(""), WS_CHILD | WS_VISIBLE | WS_TABSTOP | CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | CBS_HASSTRINGS | WS_VSCROLL, 20, 60, 300, 80, w.GetHWnd(), (HMENU)COMBOBOX_CONTROL_ID, nullptr, nullptr);
 	if (!hWndCombo)
 	{
 		FreeLibrary(hDLL);
