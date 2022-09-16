@@ -10,6 +10,7 @@
 #define     CB_CALCULATE_AUTO_WIDTH			(WM_USER + 108)
 #define     CB_SET_EMPTY_TEXT		(WM_USER + 110)
 #define     CB_AUTO_RESET_FILTERS	(WM_USER + 111)
+#define     CB_DELETE_ALL_FILTERS	(WM_USER + 112)
 
 struct COMBOBOX_STRING_PAIR
 {
@@ -40,3 +41,4 @@ struct COMBOBOX_STRING_PAIR
 
 #define ComboBox_SetEmptyText(hwndCtl, lpszText)       ((int)(DWORD)SNDMSG((hwndCtl), CB_SET_EMPTY_TEXT, (WPARAM)(LPCTSTR)(lpszText),0L))
 #define ComboBox_AutoResetFilters(hwndCtl, autoResetFilters)      ((int)(DWORD)SNDMSG((hwndCtl), CB_AUTO_RESET_FILTERS, (WPARAM)(BOOL)(autoResetFilters), 0L))
+#define ComboBox_DeleteAllFilters(hwndCtl)       ((int)(DWORD)SNDMSG((hwndCtl), CB_DELETE_ALL_FILTERS, 0L, 0L))
